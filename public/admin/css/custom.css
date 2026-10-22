@@ -1,0 +1,31 @@
+body { min-height: 100vh; overflow-x: hidden; }
+#sidebar { min-width: 250px; max-width: 250px; background: #124578; color: #fff; min-height: 100vh; position: fixed; top: 0; left: 0; z-index: 100; transition: all 0.3s; }
+#sidebar .sidebar-header { padding: 20px; background: #FFF; }
+#sidebar ul.components { padding: 20px 0; }
+#sidebar ul li a { padding: 12px 20px; font-size: 1.1em; display: block; color: #adb5bd; text-decoration: none; }
+#sidebar ul li a:hover, #sidebar ul li.active a { color: #fff; background: #b30000;}
+#sidebar ul li a i { margin-right: 10px; }
+#content { margin-left: 250px; width: calc(100% - 250px); padding: 20px; }
+@media (max-width: 768px) {
+    #sidebar { margin-left: -250px; }
+    #content { margin-left: 0; width: 100%; }
+}
+.card-header {
+    background-color:rgb(37 125 183) !important
+}
+.btn-success {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: rgb(37 125 183);
+    --bs-btn-border-color:rgb(37 125 183);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: rgb(37 125 183);
+    --bs-btn-hover-border-color: #146c43;
+    --bs-btn-focus-shadow-rgb: 60, 153, 110;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: rgb(37 125 183);
+    --bs-btn-active-border-color: rgb(37 125 183);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: rgb(37 125 183);
+    --bs-btn-disabled-border-color: rgb(37 125 183);
+}
