@@ -1,11 +1,26 @@
 <?php 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Admin\StudentImportController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Auth\StudentAuthController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\PaymentController;
+
+Route::get('/clear-cache-all', function (Illuminate\Http\Request $request) {
+    // secret token check
+    if ($request->token !== 'MySecure4') {
+        abort(403, 'Unauthorized access!');
+    }
+
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    
+    return 'All caches (application, config, route, and views) cleared successfully!';
+});
 
 Route::get('/', function () {
     return view('welcome');
