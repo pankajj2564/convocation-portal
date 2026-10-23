@@ -27,7 +27,7 @@
 
         <!-- Footer with Copyright & Contact -->
         <div style="background: #f8f9fa; padding: 15px 20px; text-align: center; border-top: 1px solid #e9ecef; color: #666; font-size: 13px;">
-            <p style="margin: 0 0 5px 0;">Contact Support: <strong>+91-XXXXXXXXXX</strong> | <strong>support@cgc.edu.in</strong></p>
+            <p style="margin: 0 0 5px 0;">Contact Support: <strong>+91-XXXXXXXXXX</strong> | <strong>info@cgc.ac.in</strong></p>
             <p style="margin: 0;">&copy; {{ date('Y') }} CGC Jhanjeri, Mohali. All rights reserved.</p>
         </div>
 
