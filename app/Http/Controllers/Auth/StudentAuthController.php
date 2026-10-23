@@ -64,7 +64,10 @@ class StudentAuthController extends Controller
                 $firstName = explode(' ', trim($student->name))[0] ?? 'Student';
                 
                 // Formulate SMS message text as requested
-                $smsMsg = 'Hello ' . ucfirst($firstName) . ', ' . $otpCode . ' is your One Time Password(OTP). This OTP is valid till 24 hours - Chandigarh Group of Colleges - Jhanjeri, Mohali';
+                //$smsMsg = 'Hello ' . ucfirst($firstName) . ', ' . $otpCode . ' is your One Time Password(OTP). This OTP is valid till 10 Minutes - CGC University, Mohali';
+
+                $smsMsg = "Hello " . ucfirst($firstName) . "\n" . 
+                          $otpCode . " is your One Time Password(OTP). This OTP is valid till 10 Minutes - CGC University, Mohali";
                 
                 $this->sendSmsApi($student->phone, $smsMsg);
             }
@@ -97,10 +100,17 @@ class StudentAuthController extends Controller
     } */
     private function sendSmsApi($phone, $message)
     {
+        // 👉 .env file se values fetch kar rahe hain
+        $apiUrl = env('SMS_API_URL', '');
+        $apiKey = env('SMS_API_KEY', '');
+        $senderId = env('SMS_SENDER_ID', '');
+        $peId = env('SMS_PE_ID', '');
+        $dltTemplateId = env('SMS_DLT_TEMPLATE_ID', '');
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://sms.innuvissolutions.com/api/mt/SendSMS',
+            CURLOPT_URL => $apiUrl,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -110,19 +120,19 @@ class StudentAuthController extends Controller
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => '{
                 "Account": {
-                    "APIKey": "2fyRTsNweUm5hpm7jaGWjA",
-                    "SenderId": "CGCMOH",
+                    "APIKey": "' . $apiKey . '",
+                    "SenderId": "' . $senderId . '",
                     "Channel": "trans",
                     "DCS": "0",
                     "FlashSms": 0,
                     "Route": 1014,
-                    "PeId": "1201159178854582764"
+                    "PeId": "' . $peId . '"
                 },
                 "Messages": [
                     {
                         "Number": "' . $phone . '",
                         "Text": "' . $message . '", 
-                        "DLTTemplateId": "1107174376040147237"
+                        "DLTTemplateId": "' . $dltTemplateId . '"
                     }
                 ]
             }',
