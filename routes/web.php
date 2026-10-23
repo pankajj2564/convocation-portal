@@ -35,6 +35,7 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admi
 
 // Protected Admin & Staff Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/students/export', [DashboardController::class, 'export'])->name('students.export');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // CSV Import (Corrected name method)

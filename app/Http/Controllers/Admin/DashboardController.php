@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DashboardController extends Controller
 {
@@ -23,12 +24,74 @@ class DashboardController extends Controller
         if ($request->filled('branch')) {
             $query->where('branch', $request->branch);
         }
+
+        // Clone query for counts before status filter
+        $baseQuery = clone $query;
+
+        // Dynamic Counts based on Degree/Branch filters
+        $totalStudents = (clone $baseQuery)->count();
+        $registeredCount = (clone $baseQuery)->where('is_registered', 1)->count();
+        $unregisteredCount = (clone $baseQuery)->where('is_registered', 0)->count();
+
+        // Now apply status filter if selected
         if ($request->filled('status')) {
             $query->where('is_registered', $request->status == 'registered' ? 1 : 0);
         }
 
-        $students = $query->paginate(10);
-        return view('admin.dashboard', compact('students'));
+        $students = $query->paginate(10)->withQueryString();
+
+        return view('admin.dashboard', compact('students', 'totalStudents', 'registeredCount', 'unregisteredCount'));
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        $query = Student::query();
+
+        if ($request->filled('degree')) {
+            $query->where('degree', $request->degree);
+        }
+        if ($request->filled('branch')) {
+            $query->where('branch', $request->branch);
+        }
+        if ($request->filled('status')) {
+            $query->where('is_registered', $request->status == 'registered' ? 1 : 0);
+        }
+
+        $students = $query->get();
+
+        $fileName = 'students_export_' . date('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Roll No', 'Name', 'Email', 'Phone', 'Degree', 'Branch', 'Status', 'Passing Year'];
+
+        $callback = function() use($students, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($students as $student) {
+                fputcsv($file, [
+                    $student->roll_no,
+                    $student->name,
+                    $student->email,
+                    $student->phone,
+                    $student->degree,
+                    $student->branch,
+                    $student->is_registered ? 'Registered' : 'Unregistered',
+                    $student->passing_year
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     // Add Student Manually (Only Admin)

@@ -10,9 +10,32 @@
     @endif
 </div>
 
+<!-- Count Cards Section (Fixed with row and proper spacing) -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3 mb-md-0">
+        <div class="card p-3 bg-primary text-white shadow-sm">
+            <h5>Total Filtered Students</h5>
+            <h3 class="mb-0">{{ $totalStudents }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3 mb-md-0">
+        <div class="card p-3 bg-success text-white shadow-sm">
+            <h5>Registered</h5>
+            <h3 class="mb-0">{{ $registeredCount }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 bg-warning text-dark shadow-sm">
+            <h5>Unregistered</h5>
+            <h3 class="mb-0">{{ $unregisteredCount }}</h3>
+        </div>
+    </div>
+</div>
+
 <!-- Filters Section -->
+<!-- Filters & Export Section -->
 <div class="card shadow-sm mb-4">
-    <div class="card-body">
+    <div class="card-body">        
         <form method="GET" action="{{ route('admin.dashboard') }}" class="row g-3">
             <div class="col-md-3">
                 <label class="form-label">Degree</label>
@@ -32,7 +55,10 @@
             </div>
             <div class="col-md-3 d-flex align-items-end">
                 <button type="submit" class="btn btn-dark w-100 me-2"><i class="fas fa-filter"></i> Filter</button>
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">Reset</a>
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary me-2">Reset</a>
+                
+                <!-- Export Button (Passes current query parameters) -->
+                <a href="{{ route('admin.students.export', request()->all()) }}" class="btn btn-success" title="Export Filtered Data"><i class="fas fa-file-excel"></i></a>
             </div>
         </form>
     </div>
@@ -91,7 +117,7 @@
         </div>
     </div>
     <div class="card-footer bg-white">
-        {{ $students->withQueryString()->links() }}
+        {{ $students->withQueryString()->links('pagination::bootstrap-5') }}
     </div>
 </div>
 
